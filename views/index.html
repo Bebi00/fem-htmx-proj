@@ -1,0 +1,34 @@
+{{ block "index" . }}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Bebi Test</title>
+        <script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        {{ template "create-contact" . }}
+        <hr/>
+        {{ template "display-contacts" . }}
+    </body>
+    </html>
+{{ end }}
+
+{{ block "create-contact" . }}
+<form hx-post="/contacts">
+    name: <input type="text", name="name"/>
+    email: <input type="text", name="email"/>
+    <button type="submit">Create</button>
+</form>
+{{ end }}
+
+{{ block "display-contacts" . }}
+    <div style="display: flex; flex-direction: column;">
+    {{ range .Contacts }}
+        </div>
+        Name: <span>{{ .Name }}</span>
+        Email: <span>{{ .Email }}</span>
+        </div>
+    {{ end }}
+{{ end }}
