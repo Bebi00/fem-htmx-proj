@@ -3,6 +3,8 @@ package main
 import (
 	"html/template"
 	"io"
+	"strconv"
+	"time"
 
 	"github.com/Bebi00/htmx_intro/model"
 	"github.com/labstack/echo/v4"
@@ -36,6 +38,9 @@ func main() {
 	indexPage := newIndexPageData()
 
 	e.Renderer = newTemplate()
+	e.Static("/images", "images")
+	e.Static("/css", "css")
+
 	e.GET("/", func(c echo.Context) error {
 		return c.Render(200, "index", indexPage)
 	})
@@ -57,6 +62,24 @@ func main() {
 
 		c.Render(200, "create-contact", model.NewCreateContactData())
 		return c.Render(200, "oob-contact", contact)
+	})
+
+	e.DELETE("/contacts/:id", func(c echo.Context) error {
+		time.Sleep(time.Second)
+		idStr := c.Param("id")
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			return c.String(400, "Invalid id")
+		}
+
+		index, err := indexPage.ContactList.IndexOf(id)
+		if err != nil {
+			return c.String(404, err.Error())
+		}
+
+		indexPage.ContactList.Contacts = append(indexPage.ContactList.Contacts[:index], indexPage.ContactList.Contacts[index+1:]...)
+
+		return c.NoContent(200)
 	})
 
 	e.Logger.Fatal(e.Start(":8080"))
