@@ -7,19 +7,45 @@ type Contact struct {
 	Email string
 }
 
-type ContactsList struct {
+type ContactList struct {
 	Contacts []Contact
 }
 
-func NewContactList(n int) ContactsList {
-	contactsList := ContactsList{
-		make([]Contact, n),
+type CreateContactData struct {
+	Values map[string]string
+	Errors map[string]string
+}
+
+func NewContact(name, email string) Contact {
+	return Contact{
+		Name:  name,
+		Email: email,
 	}
+}
+
+func NewContactList(n int) ContactList {
+	contactsList := make([]Contact, n)
 	for i := range n {
-		contactsList.Contacts[i] = Contact{
+		contactsList[i] = Contact{
 			Name:  fmt.Sprintf("Person #%v", i),
 			Email: fmt.Sprintf("person_%v@gmail.com", i),
 		}
 	}
-	return contactsList
+	return ContactList{Contacts: contactsList}
+}
+
+func ExistsEmail(email string, cl []Contact) bool {
+	for _, contact := range cl {
+		if contact.Email == email {
+			return true
+		}
+	}
+	return false
+}
+
+func NewCreateContactData() CreateContactData {
+	return CreateContactData{
+		Values: make(map[string]string),
+		Errors: make(map[string]string),
+	}
 }
